@@ -3,13 +3,25 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net"
 
 	"github.com/fatih/color"
 )
 
+var (
+	verbose = false
+)
+
 func main() {
+	flag.Usage = func() {
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Prints AWS SDK metrics. Enable them with 'export AWS_CSM_ENABLED=true'\n")
+		flag.PrintDefaults()
+	}
+	flag.BoolVar(&verbose, "v", false, "verbose mode, prints raw messages")
+	flag.Parse()
+
 	s, err := net.ResolveUDPAddr("udp4", ":31000")
 	if err != nil {
 		panic(err)
@@ -74,8 +86,12 @@ func Read(conn *net.UDPConn) (*Response, error) {
 
 	// Remove NULL characters
 	b = bytes.Trim(b, "\x00")
-	ret := &Response{}
 
+	if verbose {
+		fmt.Println(string(b))
+	}
+
+	ret := &Response{}
 	if err := json.Unmarshal(b, ret); err != nil {
 		return nil, err
 	}

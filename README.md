@@ -18,7 +18,7 @@ Run the server in one shell:
 csm
 ```
 
-Enable CSM and do some AWS API calls another shell:
+Enable CSM and do some AWS API calls in another shell:
 ```bash
 export AWS_CSM_ENABLED=true
 aws kms describe-key --key-id 5492cc29-0843-40e7-87e5-c677959bc7dd
